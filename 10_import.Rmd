@@ -1,0 +1,68 @@
+---
+title: "10_import"
+output: html_notebook
+---
+
+# Metro Interstate Traffic Volume Data
+
+
+I will need the following libraries:
+
+```{r libraries}
+library(readxl)
+library(assertr)
+library(dplyr)
+library(purrr)
+library(janitor)
+library(lubridate)
+library(tidyr)
+```
+
+
+Now, I will load the data and examine it.
+```{r load data}
+Metro_Traffic <- read_excel("Metro_Interstate_Traffic_Volume.xlsx") %>%
+  clean_names()
+
+head(Metro_Traffic)
+
+Metro_Traffic %>%
+  map(class)
+
+```
+
+Before I delve too deeply in the data, I want to make sure there is no abnormal data in the dataset. To do so, I will use the assertr library to check different variables. 
+
+First, let's make sure that the variable measuring cloud cover (in percent) lies between 0 and 100. 
+
+```{r check cloud coverage}
+Metro_Traffic %>%
+  assert(within_bounds(0, 100), clouds_all)
+```
+
+Looks good! 
+
+
+I also want to make sure that all traffic volume values are positive.
+
+```{r}
+Metro_Traffic %>%
+  assert(within_bounds(0, 10000), traffic_volume)
+```
+Also looks good! 
+
+
+Normally, I would also want to change the date and time to the correct format but, in this case, they already are. The data ranges from 2012 to 2018.
+
+```{r check date and time}
+str(Metro_Traffic$date_time)
+min(Metro_Traffic$date_time)
+max(Metro_Traffic$date_time)
+```
+
+
+
+Metro_Traffic1 <- Metro_Traffic %>%
+  mutate(temp_f = (((temp - 273.15) * 9) / 5)  + 32) %>%
+  arrange(temp_f)
+Metro_Traffic1
