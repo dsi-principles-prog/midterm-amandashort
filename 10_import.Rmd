@@ -19,7 +19,8 @@ library(tidyr)
 ```
 
 
-Now, I will load the data and examine it.
+Now, I will load the data and examine it. I will also ensure that the names are in a clean format for use.
+
 ```{r load data}
 Metro_Traffic <- read_excel("Metro_Interstate_Traffic_Volume.xlsx") %>%
   clean_names()
@@ -60,9 +61,3 @@ min(Metro_Traffic$date_time)
 max(Metro_Traffic$date_time)
 ```
 
-
-
-Metro_Traffic1 <- Metro_Traffic %>%
-  mutate(temp_f = (((temp - 273.15) * 9) / 5)  + 32) %>%
-  arrange(temp_f)
-Metro_Traffic1
