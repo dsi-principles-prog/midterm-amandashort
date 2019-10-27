@@ -1,0 +1,39 @@
+---
+title: "40_modeling"
+output: html_notebook
+---
+
+# Modeling the data
+
+I will now add all of the new features to the data frame in order to prepare for modeling.
+```{r add features to data}
+Metro_Traffic_eng <- Metro_Traffic %>%
+  rush_hour2("date_time") %>%
+  fahrenheit("temp") %>%
+  select(traffic_volume, everything()) %>%
+  assert(in_set("TRUE", "FALSE"), am_rush_hour) %>%
+  assert(within_bounds(-45, 110), temp_f)
+```
+
+
+
+
+The temperature variable has a few values at -459 degrees. This is obviously incorrect. I will remove these values since they lie so far from the acceptable range and replace them with NA. This is done with the mutate statement added in below. 
+
+```{r fix std_rain}
+Metro_Traffic_eng <- Metro_Traffic %>%
+  rush_hour2("date_time") %>%
+  fahrenheit("temp") %>%
+  select(traffic_volume, everything()) %>%
+  assert(in_set("TRUE", "FALSE"), am_rush_hour) %>%
+  mutate(temp_f = replace(temp_f, temp_f<= -45, NA)) %>%
+  assert(within_bounds(-45, 110), temp_f)
+```
+
+
+Now the data is ready for further modeling.
+
+```{r}
+Metro_Traffic_eng
+```
+
