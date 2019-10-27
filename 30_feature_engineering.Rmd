@@ -1,0 +1,38 @@
+---
+title: "30_feature_engineering"
+output: html_notebook
+---
+
+# Adding features to the existing dataset
+
+Let's also look at temperature values. The temperature variable looks very high! This is because the temps are in kelvin. I want to convert them to Fahrenheit so that they are more meaningful. I will do this by using a standard formula for converting temperature values from kelvin to fahrenheit. Temperature could play a part in predicting traffic volume.
+```{r convert temperature}
+temp_new <- function(x) ((((x - 273.15) * 9) / 5) + 32)
+fahrenheit <- function(df, var) {
+  df %>%
+   mutate_at({{var}}, list(temp_f = temp_new))
+}
+```
+
+
+I want to now transform the holiday variable to be binary. 0 will denote a non-holiday day and 1 will be a holiday. It would be useful to compare the traffic on days that are traditionally celebrated as holidays versus non-holidays. This function works by identifying all holidays and setting them to a value of 1.
+```{r binary holidays}
+
+```
+
+It would also be useful to also add a column specifying the day of the week. Day of week may have an impact on the traffic volume especially comparing weekdays to weekend days. This function takes an input of date and outputs the day of the week. It would be best to label the days (i.e. Monday, Tuesday, etc.) rather than using numbers.
+```{r weekday}
+
+```
+
+I also want to make a rush hour variable. In this instance, this will only be for the morning hours which I will assume are between 7 and 9. I believe that this would be a good indicator of how much traffic will be present compared to non-rush hour volume. This function takes all times between 7 and 9am and outputs a logical true/false statement of whether a given time falls into that range.
+```{r rush hour}
+time1 <- ymd_hms("2012-10-02 07:00:00")
+time2 <- ymd_hms("2018-09-30 09:00:00")
+rush_hour1 <- function(x) (x %in% interval(time1, time2))
+rush_hour2 <- function(df, var) {
+    df %>%
+    mutate_at({{var}}, list(am_rush_hour = rush_hour1)) 
+}
+```
+
